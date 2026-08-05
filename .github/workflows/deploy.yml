@@ -1,0 +1,46 @@
+name: Refresh setlist data
+
+# Cloudflare Pages builds and hosts the site straight from this repo (Git integration),
+# so there is no deploy step here. This workflow just pulls fresh data from the
+# setlist.fm API once a day and commits it — that commit triggers Cloudflare to rebuild.
+# The only secret required is SETLISTFM_API_KEY.
+
+on:
+  schedule:
+    - cron: "0 11 * * *"   # 11:00 UTC daily (~6–7am US)
+  workflow_dispatch: {}     # allow manual runs from the Actions tab
+
+permissions:
+  contents: write           # needed to commit refreshed data back
+
+concurrency:
+  group: refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch latest setlists (incremental)
+        env:
+          SETLISTFM_API_KEY: ${{ secrets.SETLISTFM_API_KEY }}
+          SETLIST_OUT: src/rush-data.json
+        run: python fetch_setlistfm.py
+
+      - name: Commit refreshed data if it changed
+        run: |
+          git config user.name "setlist-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add src/rush-data.json data/setlists.json
+          if git diff --cached --quiet; then
+            echo "No new setlist data."
+          else
+            git commit -m "chore: refresh setlist data ($(date -u +%Y-%m-%d))"
+            git push
+          fi
