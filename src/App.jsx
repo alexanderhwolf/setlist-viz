@@ -239,7 +239,7 @@ export default function App() {
     <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "34px 16px 60px" }}>
       <div style={{ width: "100%", maxWidth: 440 }}>
 
-        <a href="mailto:alextwolf@gmail.com"
+        <a href="https://inkmeetsdata.com/" target="_blank" rel="noopener noreferrer"
            style={{ display: "block", textAlign: "center", textDecoration: "none",
                     paddingBottom: 16, marginBottom: 20, borderBottom: "1px solid var(--line)" }}>
           <div className="mono" style={{ fontSize: 9, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--dim)" }}>Brought to you by</div>
@@ -698,7 +698,7 @@ export default function App() {
             Sources &amp; caveats
           </button>
           <br />Not affiliated with Rush or setlist.fm · A data visualization by{" "}
-          <a href="mailto:alextwolf@gmail.com" style={{ textDecoration: "none", color: "var(--dim)" }}>
+          <a href="https://inkmeetsdata.com/" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", color: "var(--dim)" }}>
             <span style={{ fontFamily: "'Michroma', sans-serif", fontSize: 12, color: "var(--ink)" }}>I<span style={{ color: "var(--teal)" }}>∧</span>D</span>{" "}Ink Meets Data
           </a>.
         </footer>
