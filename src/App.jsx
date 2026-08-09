@@ -244,7 +244,7 @@ export default function App() {
                     paddingBottom: 16, marginBottom: 20, borderBottom: "1px solid var(--line)" }}>
           <div className="mono" style={{ fontSize: 9, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--dim)" }}>Brought to you by</div>
           <div style={{ fontFamily: "'Michroma', sans-serif", fontSize: 23, color: "var(--ink)", marginTop: 8, lineHeight: 1 }}>
-            I<span style={{ color: "var(--ember2)" }}>∧</span>D
+            I<span style={{ color: "var(--teal)" }}>∧</span>D
           </div>
           <div className="mono" style={{ fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--dim)", marginTop: 9 }}>Ink Meets Data</div>
         </a>
@@ -252,7 +252,7 @@ export default function App() {
         <header style={{ textAlign: "center", marginBottom: 22 }}>
           <div className="stamp">Performance Index</div>
           <h1 className="tracked" style={{ fontSize: 25, fontWeight: 600, letterSpacing: "0.12em", lineHeight: 1.25, margin: "12px 0 0" }}>
-            How many times has<br /><span style={{ color: "var(--ember2)" }}>Rush</span> played it?
+            How many times has<br /><span style={{ color: "var(--ember2)" }}>Rush</span> played it live?
           </h1>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 12 }}>
             <span className="mono" style={{ fontSize: 10, letterSpacing: "0.18em", color: "var(--dim)" }}>1974 — 2026</span>
@@ -698,7 +698,9 @@ export default function App() {
             Sources &amp; caveats
           </button>
           <br />Not affiliated with Rush or setlist.fm · A data visualization by{" "}
-          <a href="mailto:alextwolf@gmail.com" style={{ textDecoration: "underline", color: "var(--dim)" }}>Wolf Data Visualization</a>.
+          <a href="mailto:alextwolf@gmail.com" style={{ textDecoration: "none", color: "var(--dim)" }}>
+            <span style={{ fontFamily: "'Michroma', sans-serif", fontSize: 12, color: "var(--ink)" }}>I<span style={{ color: "var(--teal)" }}>∧</span>D</span>{" "}Ink Meets Data
+          </a>.
         </footer>
       </div>
     </div>

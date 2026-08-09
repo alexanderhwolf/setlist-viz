@@ -6,7 +6,7 @@
   <rect x="26.5" y="44" width="7" height="40" fill="#e9edf6"/>
   <rect x="20" y="77" width="20" height="7" fill="#e9edf6"/>
   <!-- ∧ meet operator -->
-  <path d="M50 84 L60 45 L70 84" fill="none" stroke="#e06a4f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M50 84 L60 45 L70 84" fill="none" stroke="#35d0c4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- D -->
   <rect x="80" y="44" width="7" height="40" fill="#e9edf6"/>
   <path d="M87 44 A20 20 0 0 1 87 84" fill="none" stroke="#e9edf6" stroke-width="7" stroke-linecap="round"/>
