@@ -239,6 +239,16 @@ export default function App() {
     <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", padding: "34px 16px 60px" }}>
       <div style={{ width: "100%", maxWidth: 440 }}>
 
+        <a href="mailto:alextwolf@gmail.com"
+           style={{ display: "block", textAlign: "center", textDecoration: "none",
+                    paddingBottom: 16, marginBottom: 20, borderBottom: "1px solid var(--line)" }}>
+          <div className="mono" style={{ fontSize: 9, letterSpacing: "0.24em", textTransform: "uppercase", color: "var(--dim)" }}>Brought to you by</div>
+          <div style={{ fontFamily: "'Michroma', sans-serif", fontSize: 23, color: "var(--ink)", marginTop: 8, lineHeight: 1 }}>
+            I<span style={{ color: "var(--ember2)" }}>∧</span>D
+          </div>
+          <div className="mono" style={{ fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: "var(--dim)", marginTop: 9 }}>Ink Meets Data</div>
+        </a>
+
         <header style={{ textAlign: "center", marginBottom: 22 }}>
           <div className="stamp">Performance Index</div>
           <h1 className="tracked" style={{ fontSize: 25, fontWeight: 600, letterSpacing: "0.12em", lineHeight: 1.25, margin: "12px 0 0" }}>
