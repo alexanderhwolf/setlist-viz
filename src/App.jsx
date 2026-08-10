@@ -172,6 +172,7 @@ export default function App() {
   const [showIdx, setShowIdx] = useState(null);
   const [atlasView, setAtlasView] = useState("city");
   const [place, setPlace] = useState(null);
+  const [tourShows, setTourShows] = useState(null);
 
   const count = useCountUp(song.c);
 
@@ -180,6 +181,15 @@ export default function App() {
     const t = setTimeout(() => setBarW(song.c === 0 ? 0 : Math.max(1.5, (song.c / MAX) * 100)), 40);
     return () => clearTimeout(t);
   }, [song]);
+
+  // Load the per-show setlists (1.6MB) only when the Tours tab is first opened
+  useEffect(() => {
+    if (tab === "tours" && tourShows === null) {
+      let cancelled = false;
+      import("./tour-shows.json").then((m) => { if (!cancelled) setTourShows(m.default); });
+      return () => { cancelled = true; };
+    }
+  }, [tab, tourShows]);
 
   const choose = (s) => {
     const full = SONGS.find((x) => x.n === s.n);
@@ -490,25 +500,19 @@ export default function App() {
               ))}
             </div>
 
-            {eyebrow("Songs on this tour · most played first")}
-            <div className="panel" style={{ overflow: "hidden" }}>
-              {activeTour.songs.map((s, i) => (
-                <button key={s.n} className="row" onClick={() => choose(s)}>
-                  <span className="mono" style={{ fontSize: 11, color: "var(--faint)", width: 30, flexShrink: 0 }}>{pad2(i + 1)}</span>
-                  <span className="row-name" style={{ fontSize: 13 }}>{s.n}</span>
-                  <span className="row-val">{s.k}</span>
-                </button>
-              ))}
-            </div>
-
-            {activeTour.t === CURRENT_TOUR && NSHOWS > 0 && (
-              <>
-                <div style={{ marginTop: 24 }}>{eyebrow("Shows so far · tap for the setlist")}</div>
+            {eyebrow(activeTour.shows === 1 ? "The show · tap for the setlist" : "Shows · tap for the setlist")}
+            {(() => {
+              const activeShows = tourShows ? (tourShows[activeTour.t] || []) : null;
+              if (activeShows === null)
+                return <div className="panel" style={{ padding: 18, textAlign: "center" }}><span className="mono" style={{ fontSize: 11, color: "var(--dim)" }}>Loading setlists…</span></div>;
+              if (activeShows.length === 0)
+                return <div className="panel" style={{ padding: 18, textAlign: "center" }}><span className="mono" style={{ fontSize: 11, color: "var(--dim)" }}>No documented setlists for this tour.</span></div>;
+              return (
                 <div className="panel" style={{ overflow: "hidden" }}>
-                  {TOUR.map((s, i) => (
+                  {activeShows.map((s, i) => (
                     <div key={s.url || i} style={{ borderBottom: "1px solid var(--line)" }}>
                       <button className="row" style={{ borderBottom: 0 }} onClick={() => setShowIdx(showIdx === i ? null : i)}>
-                        <span className="mono" style={{ fontSize: 11, color: "var(--dim)", width: 48 }}>{fmtDate(s.date)}</span>
+                        <span className="mono" style={{ fontSize: 10, color: "var(--dim)", width: 74, flexShrink: 0, textAlign: "left" }}>{s.date.slice(0, 4)} · {fmtDate(s.date)}</span>
                         <span style={{ flex: 1, minWidth: 0 }}>
                           <span style={{ display: "block", fontSize: 14, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {s.city.split(",").slice(0, -1).join(",") || s.city}
@@ -546,10 +550,24 @@ export default function App() {
                     </div>
                   ))}
                 </div>
-                <p className="mono" style={{ fontSize: 10, color: "var(--faint)", marginTop: 12, padding: "0 4px", lineHeight: 1.7, letterSpacing: "0.04em" }}>
-                  The band alternates a 24-song and a 28-song set (the long one has the full 2112 suite), so many songs cluster near 50% across the {NSHOWS} shows logged.
-                </p>
-              </>
+              );
+            })()}
+
+            <div style={{ marginTop: 24 }}>{eyebrow("Songs on this tour · most played first")}</div>
+            <div className="panel" style={{ overflow: "hidden" }}>
+              {activeTour.songs.map((s, i) => (
+                <button key={s.n} className="row" onClick={() => choose(s)}>
+                  <span className="mono" style={{ fontSize: 11, color: "var(--faint)", width: 30, flexShrink: 0 }}>{pad2(i + 1)}</span>
+                  <span className="row-name" style={{ fontSize: 13 }}>{s.n}</span>
+                  <span className="row-val">{s.k}</span>
+                </button>
+              ))}
+            </div>
+
+            {activeTour.t === CURRENT_TOUR && (
+              <p className="mono" style={{ fontSize: 10, color: "var(--faint)", marginTop: 12, padding: "0 4px", lineHeight: 1.7, letterSpacing: "0.04em" }}>
+                The band alternates a 24-song and a 28-song set (the long one has the full 2112 suite), so many songs cluster near 50% across the shows logged this tour.
+              </p>
             )}
           </>
         )}

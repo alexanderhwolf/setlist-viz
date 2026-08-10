@@ -311,6 +311,30 @@ def main():
     freq = Counter(x["n"] for s in tour_shows for x in s["songs"])
     freq_list = [{"n": n, "k": k} for n, k in freq.most_common()]
 
+    # ---- per-show setlists for EVERY named tour (lazy-loaded by the app)
+    shows_by_tour = defaultdict(list)
+    for sl in sls:
+        tname = (sl.get("tour") or {}).get("name")
+        if not tname:
+            continue
+        songs_list = [{"n": n, "e": e} for n, e in songs_of(sl)]
+        if not songs_list:
+            continue  # skip empty / setlist-less dates
+        v = sl.get("venue", {})
+        city = v.get("city", {})
+        loc = ", ".join(filter(None, [city.get("name"), (city.get("stateCode") or ""),
+                                      (city.get("country") or {}).get("name")]))
+        d, m, y = sl["eventDate"].split("-")
+        shows_by_tour[tname].append({
+            "date": f"{y}-{m}-{d}",
+            "venue": v.get("name", ""),
+            "city": loc,
+            "url": sl.get("url", ""),
+            "songs": songs_list,
+        })
+    for t in shows_by_tour:
+        shows_by_tour[t].sort(key=lambda s: s["date"])
+
     # ---- per-tour history (all tours, whole career)
     # song_tour[song][tour] = {plays, years}; tour_meta[tour] = {shows, years, song counts}
     song_tour = defaultdict(lambda: defaultdict(lambda: {"k": 0, "years": set()}))
@@ -461,12 +485,20 @@ def main():
         "songGeo": song_geo,
         "albumGeo": album_geo,
     }
-    Path(os.environ.get("SETLIST_OUT", "src/rush-data.json")).write_text(json.dumps(out, separators=(",", ":")))
+    out_path = os.environ.get("SETLIST_OUT", "src/rush-data.json")
+    Path(out_path).write_text(json.dumps(out, separators=(",", ":")))
 
-    print(f"\nWrote {os.environ.get('SETLIST_OUT', 'src/rush-data.json')}")
+    # per-show setlists go in a sibling file, loaded on demand by the Tours tab
+    shows_path = str(Path(out_path).with_name("tour-shows.json"))
+    Path(shows_path).write_text(json.dumps(dict(shows_by_tour), separators=(",", ":")))
+
+    print(f"\nWrote {out_path}")
     print(f"  {len(songs)} distinct songs, top: {songs[0]['n']} ({songs[0]['c']})")
     print(f"  {len(never)} studio tracks never played")
     print(f"  {len(tour_shows)} {CURRENT_TOUR} shows, {len(freq_list)} unique songs this tour")
+    print(f"Wrote {shows_path}")
+    print(f"  {len(shows_by_tour)} tours with per-show setlists, "
+          f"{sum(len(v) for v in shows_by_tour.values())} shows total")
 
     if "--inject" in sys.argv:
         target = Path(sys.argv[sys.argv.index("--inject") + 1])
